@@ -1,0 +1,6 @@
+Name,Password,Mode,LRL,URL,AA,APW,AS,ARP,PVARP,VA,VPW,VS,VVP,Hyst,RS,ID
+Julia Lisboa,Test1,AAI,5,100,4,3, , , ,4,90, , , , ,1
+Charlotte Neumann,Test2,AOO,50,50,70,70, , , , , , , , , ,2
+Laurie Baker,Test3,AAI,70,70,50,50,50,50,50, , , , ,2,2,3
+Halle Bachiu,Test4,VVI,80,80, , , , , ,50,50,60,60,3,3,4
+mai,123,VOO,35,100,4,100, , , ,4,122, , , , ,5
