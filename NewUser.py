@@ -6,6 +6,7 @@ import os
 import data
 import ExistingUser as exu
 
+
 sg.theme('DarkBrown4')
 
 def new_patient():
@@ -37,7 +38,7 @@ def new_patient():
         
 
 def mode_input(name, pw,ID):
-    modes =['AOO','VOO','AAI','VVI'] #possible modes in the drop down menu
+    modes =['AOO','VOO','AAI','VVI','DOO','AOOR','VOOR','AAIR','VVIR','DOOR'] #possible modes in the drop down menu
     layout = [[sg.Text('Input Mode:',font=('Arial', 20)),sg.Combo(values=modes)],[sg.Button('Submit')]]
     window = sg.Window('New Patient Input',layout,size=(300, 100),element_justification='c')
     while True:
@@ -47,13 +48,25 @@ def mode_input(name, pw,ID):
             window.close()
           
             if  values[0] == "AOO": #redirects to a different function based on the user mode input
-                AOO_input(name, pw,ID) # for now, the
+                AOO_input(name, pw,ID) 
             elif values[0] == "VOO":
                 VOO_input(name, pw,ID)
             elif values[0] == 'AAI':
                 AAI_input(name,pw,ID)
             elif values[0] == 'VVI':
                 VVI_input(name,pw,ID)
+            elif values[0] == 'DOO':
+                DOO_input(name,pw,ID)
+            elif values[0] == 'AOOR':
+                AOOR_input(name,pw,ID)
+            elif values[0] == 'VOOR':
+                VOOR_input(name,pw,ID)
+            elif values[0] == 'AAIR':
+                AAIR_input(name,pw,ID)
+            elif values[0] == 'VVIR':
+                VVIR_input(name,pw,ID)
+            elif values[0] == 'DOOR':
+                DOOR_input(name,pw,ID)
             else:
                 err.pw_error('mode')
                 mode_input(name,pw,ID)
@@ -74,7 +87,7 @@ def AOO_input(name,pw,ID):
     
     while True:
         event, values = window.read()
-        info = [name, pw, 'AOO',values[0],values[1],values[2],values[3],' ',' ',' ',' ',' ',' ',' ',' ',' ', ID] #creates a list of the given values at the correct place
+        info = [name, pw, 'AOO',values[0],values[1],values[2],values[3],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,ID] #creates a list of the given values at the correct place
         if event == 'Submit':
             break
     window.close()
@@ -82,13 +95,12 @@ def AOO_input(name,pw,ID):
     check_para = ['LRL','URL','AA','APW']
     check_input = [values[0],values[1],values[2],values[3]]
 
-    for i in range(len(check_para)): #goes through the list of values and check things out
-        check = err.range_error(check_input[i],check_para[i])
-        if check == True:
-            AOO_input(name,pw,ID)
-            break
+    
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        AOO_input(name,pw,ID)
         
-    if check != True: 
+    if len(list_check) == 0 and check != True: 
         append_to_file(info)
     
     
@@ -106,7 +118,7 @@ def VOO_input(name,pw,ID):
 
     while True:
         event, values = window.read()
-        info = [name, pw, 'VOO',values[0],values[1],' ',' ',' ',' ',' ',values[2],values[3],' ',' ',' ',' ',ID] # takes the user input and puts it in as a list, spaces are to skip cells in the csv
+        info = [name, pw, 'VOO',values[0],values[1],0,0,0,0,0,values[2],values[3],0,0,0,0,0,0,0,0,0,0,0,0,0,0,ID] # takes the user input and puts it in as a list, spaces are to skip cells in the csv
         if event == 'Submit':
             break
     window.close()
@@ -114,13 +126,11 @@ def VOO_input(name,pw,ID):
     check_para = ['LRL','URL','VA','VPW']
     check_input = [values[0],values[1],values[2],values[3]]
 
-    for i in range(len(check_para)): #goes through the list of values and check things out
-        check = err.range_error(check_input[i],check_para[i])
-        if check == True:
-            VOO_input(name,pw,ID)
-            break
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        VOO_input(name,pw,ID)
         
-    if check != True: 
+    if len(list_check) == 0 and check != True: 
         append_to_file(info)
 
 #for AAI new user inputs
@@ -141,7 +151,7 @@ def AAI_input(name,pw,ID):
     
     while True:
         event, values = window.read()
-        info = [name, pw, 'AAI',values[0],values[1],values[2],values[3],values[4],values[5],values[6],' ',' ',' ',' ',values[7],values[8],ID]
+        info = [name, pw, 'AAI',values[0],values[1],values[2],values[3],values[4],values[5],values[6],0,0,0,0,values[7],values[8],0,0,0,0,0,0,ID]
         #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
         if event == 'Submit':
             break
@@ -150,13 +160,13 @@ def AAI_input(name,pw,ID):
     check_para = ['LRL','URL','AA','APW','AS','ARP','PVARP','Hyst'] # don't need to check rate smoothing at this point
     check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7]]
 
-    for i in range(len(check_para)): #goes through the list of values and check things out
-        check = err.range_error(check_input[i],check_para[i])
-        if check == True:
-            AAI_input(name,pw,ID)
-            break
-    if check != True: 
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        AAI_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
         append_to_file(info)
+
 
 #for VVI new user inputs
 def VVI_input(name,pw,ID):        
@@ -175,7 +185,7 @@ def VVI_input(name,pw,ID):
     
     while True:
         event, values = window.read()
-        info = [name, pw, 'VVI',values[0],values[1],' ',' ',' ',' ',' ',values[2],values[3],values[4],values[5],values[6],values[7],ID]
+        info = [name, pw, 'VVI',values[0],values[1],0,0,0,0,0,values[2],values[3],values[4],values[5],values[6],values[7],0,0,0,0,0,0,ID]
         #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
         if event == 'Submit':
             break
@@ -184,13 +194,227 @@ def VVI_input(name,pw,ID):
     check_para = ['LRL','URL','VA','VPW','VS','VRP','Hyst'] # don't need to check rate smoothing at this point
     check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6]]
 
-    for i in range(len(check_para)): #goes through the list of values and check things out
-        check = err.range_error(check_input[i],check_para[i])
-        if check == True:
-            VVI_input(name,pw,ID)
-            break
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        VVI_input(name,pw,ID)
         
-    if check != True: 
+    if len(list_check) == 0 and check != True: 
+        append_to_file(info)
+
+#for DOO new user inputs
+def DOO_input(name,pw,ID):        
+    #window set up
+    layout = [[sg.Text("Input Parameters",font=('Courier New', 30))],
+              [sg.Text("Lower Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Upper Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Fixed AV Delay (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Button('Submit',font=('Arial', 20))]]
+    window= sg.Window('New User Parameter Input', layout)
+    
+    while True:
+        event, values = window.read()
+        info = [name, pw, 'DOO',values[0],values[1],values[2],values[3],0,0,0,values[4],values[5],0,0,0,0,values[6],0,0,0,0,0,ID]
+        #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
+        if event == 'Submit':
+            break
+    window.close()
+
+    check_para = ['LRL','URL','AA','APW','VA','VPW','AVD'] # don't need to check rate smoothing at this point
+    check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6]]
+
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        DOO_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
+        append_to_file(info)
+
+#for AOOR new user inputs
+def AOOR_input(name,pw,ID):        
+    #window set up
+    layout = [[sg.Text("Input Parameters",font=('Courier New', 30))],
+              [sg.Text("Lower Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Upper Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Max Sensor Rate (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Activity Threshold:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Reaction Time (sec):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Response Factor:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Recovery Time (min):",font=('Arial', 20)), sg.InputText()],
+              [sg.Button('Submit',font=('Arial', 20))]]
+    window= sg.Window('New User Parameter Input', layout)
+    
+    while True:
+        event, values = window.read()
+        info = [name, pw, 'AOOR',values[0],values[1],values[2],values[3],0,0,0,0,0,0,0,0,0,0,values[4],values[5],values[6],values[7],values[8],ID]
+        #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
+        if event == 'Submit':
+            break
+    window.close()
+
+    check_para = ['LRL','URL','AA','APW','MSR','AT','React','RF','Recover'] # don't need to check rate smoothing at this point
+    check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8]]
+
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        AOOR_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
+        append_to_file(info)
+
+#for VOOR new user inputs
+def VOOR_input(name,pw,ID):        
+    #window set up
+    layout = [[sg.Text("Input Parameters",font=('Courier New', 30))],
+              [sg.Text("Lower Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Upper Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Max Sensor Rate (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Activity Threshold:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Reaction Time (sec):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Response Factor:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Recovery Time (min):",font=('Arial', 20)), sg.InputText()],
+              [sg.Button('Submit',font=('Arial', 20))]]
+    window= sg.Window('New User Parameter Input', layout)
+    
+    while True:
+        event, values = window.read()
+        info = [name, pw, 'VOOR',values[0],values[1],0,0,0,0,0,values[2],values[3],0,0,0,0,0,values[4],values[5],values[6],values[7],values[8],ID]
+        #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
+        if event == 'Submit':
+            break
+    window.close()
+
+    check_para = ['LRL','URL','VA','VPW','MSR','AT','React','RF','Recover'] 
+    check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8]]
+
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        VOOR_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
+        append_to_file(info)
+
+#for AAIR new user inputs
+def AAIR_input(name,pw,ID):        
+    #window set up
+    layout = [[sg.Text("Input Parameters",font=('Courier New', 30))],
+              [sg.Text("Lower Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Upper Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Sensitivity:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("ARP (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("PVARP (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Hysteresis (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Rate Smoothing:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Max Sensor Rate (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Activity Threshold:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Reaction Time (sec):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Response Factor:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Recovery Time (min):",font=('Arial', 20)), sg.InputText()],
+              [sg.Button('Submit',font=('Arial', 20))]]
+    window= sg.Window('New User Parameter Input', layout)
+    
+    while True:
+        event, values = window.read()
+        info = [name, pw, 'AAIR',values[0],values[1],values[2],values[3],values[4],values[5],values[6],0,0,0,0,values[7],
+                values[8],0,values[9],values[10],values[11],values[12],values[13],ID]
+        #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
+        if event == 'Submit':
+            break
+    window.close()
+
+    check_para = ['LRL','URL','AA','APW','AS','ARP','PVARP','Hyst','RS','MSR','AT','React','RF','Recover'] # don't need to check rate smoothing at this point
+    check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13]]
+
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        AAIR_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
+        append_to_file(info)
+
+#for VVIR new user inputs
+def VVIR_input(name,pw,ID):        
+    #window set up
+    layout = [[sg.Text("Input Parameters",font=('Courier New', 30))],
+              [sg.Text("Lower Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Upper Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Sensitivity:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("VRP (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Hysteresis (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Rate Smoothing:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Max Sensor Rate (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Activity Threshold:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Reaction Time (sec):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Response Factor:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Recovery Time (min):",font=('Arial', 20)), sg.InputText()],
+              [sg.Button('Submit',font=('Arial', 20))]]
+    window= sg.Window('New User Parameter Input', layout)
+    
+    while True:
+        event, values = window.read()
+        info = [name, pw, 'VVIR',values[0],values[1],0,0,0,0,0,values[2],values[3],values[4],values[5],values[6],values[7],0,
+                values[8],values[9],values[10],values[11],values[12],ID]
+        #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
+        if event == 'Submit':
+            break
+    window.close()
+
+    check_para = ['LRL','URL','VA','VPW','VS','VRP','Hyst','RS','MSR','AT','React','RF','Recover'] 
+    check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],values[12]]
+
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        VVIR_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
+        append_to_file(info)
+
+#for DOOR new user inputs
+def DOOR_input(name,pw,ID):        
+    #window set up
+    layout = [[sg.Text("Input Parameters",font=('Courier New', 30))],
+              [sg.Text("Lower Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Upper Rate Limit (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Atrial Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Amplitude (V):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Ventricular Pulse Width (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Fixed AV Delay (ms):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Max Sensor Rate (ppm):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Activity Threshold:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Reaction Time (sec):",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Response Factor:",font=('Arial', 20)), sg.InputText()],
+              [sg.Text("Recovery Time (min):",font=('Arial', 20)), sg.InputText()],
+              [sg.Button('Submit',font=('Arial', 20))]]
+    window= sg.Window('New User Parameter Input', layout)
+    
+    while True:
+        event, values = window.read()
+        info = [name, pw, 'DOOR',values[0],values[1],values[2],values[3],0,0,0,values[4],values[5],0,0,0,0,values[6],values[7],values[8],values[9],values[10],values[11],ID]
+        #creates a list of the given values at the correct place, ' ' ensure things are inputted at the correct location
+        if event == 'Submit':
+            break
+    window.close()
+
+    check_para = ['LRL','URL','AA','APW','VA','VPW','AVD','MSR','AT','React','RF','Recover'] # don't need to check rate smoothing at this point
+    check_input = [values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11]]
+
+    check, list_check = err.range_error(check_input,check_para)
+    if len(list_check) != 0:
+        DOOR_input(name,pw,ID)
+        
+    if len(list_check) == 0 and check != True: 
         append_to_file(info)
     
 def append_to_file(info):

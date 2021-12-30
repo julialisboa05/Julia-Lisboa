@@ -1,11 +1,57 @@
 import PySimpleGUI as sg
 import csv
+import Error as err
 import os
+import time
+import Serial_Com as com
+import struct
+import egram
 
-def running(): 
+sg.theme('DarkBrown4')
+
+def serial(Name):
+
+    to_send = com.pack_data(Name)
+    sending = struct.unpack("<ccBBBfffhhfffhBBffffffB", to_send)
+    first_display = sending[2:]
+    ID = first_display[-1]
+    com.send(to_send)
+    
+    layout = [[sg.Text("Sending . . .",font=("Courier New",20))],
+            [sg.Text("Parameters sent: "+str(first_display), font=('Arial', 15), text_color='White')],
+            [sg.Text("Patient ID sent: "+str(ID),font=('Arial', 15), text_color='White')]]
+    
+    window = sg.Window("Data Display", layout, element_justification='c')
+    event, values = window.read(timeout = 3000)
+
+    window.close()
+    
+    received = com.receive()
+    ID_2 = received[-1]
+
+    layout = [[sg.Text("Received",font=("Courier New",20))],
+            [sg.Text("Parameters sent: "+str(first_display), font=('Arial', 15), text_color='White')],
+            [sg.Text("Patient ID sent: "+str(ID),font=('Arial', 15), text_color='White')],
+            [sg.Text("Parameters received: "+str(received), font=('Arial', 15), text_color='White')],
+            [sg.Text("Patient ID received: "+str(ID_2),font=('Arial', 15), text_color='White')]]
+
+    if int(ID) == int(ID_2):
+        layout.append([sg.Text("Pacemaker Recognized",font=("Courier New",20))])
+    
+    window = sg.Window("Data Display", layout, element_justification='c')
+    event, values = window.read(timeout = 10000)
+
+    window.close()    
+    
+    return None
+
+def running(Name):
+    
+    serial(Name)
     # loading bar from https://stackoverflow.com/questions/65575861/waiting-screen-while-data-is-being-extracted-from-an-api
     sg.theme('DarkBrown4')
-    layout = [[sg.Text('', size=(50, 1), relief='sunken', font=('Courier', 15),text_color='yellow', background_color='black',key='TEXT')],[sg.Button('Cancel')]]
+    layout = [[sg.Text('', size=(50, 1), relief='sunken', font=('Courier', 15),text_color='yellow', background_color='black',key='TEXT')],[sg.Button('Cancel')],
+              [sg.Button("Show Egram")]]
     window = sg.Window('Running', layout, finalize=True)
     text = window['TEXT']
     state = 0
@@ -17,53 +63,17 @@ def running():
             window.close()
             os.system('Home.py')
             break
+        elif event == "Show Egram":
+            window.close()
+            egram.egram_choose()
+            break
+            
         state = (state+1)%51
         text.update('█'*state)
 
     window.close()
 
-def load_parameters(Name_given): #ideally this function will pass the necessary parameters to the hardware, however, they are not connected yet so it returns nothing
-    with open('Demo.csv', mode='r') as f:
-        reader = csv.DictReader(f)
+#running("Charlotte Neumann")
 
-    for row in reader:
-        if row["Name"] == Name_given:   #find the row with patient we want
-           
-            if row["Mode"] == "AOO": #Display parameters for AOO
 
-                LRL = int(row["LRL"])
-                URL = int(row["URL"])
-                AA = int(row["AA"])
-                APW = int(row["APW"]) # in the future, when the program is connected to the hardware, these values will be passed through (may have to change type)
-                
-            elif row["Mode"] == "VOO":  #Display parameters for VOO
 
-                LRL = int(row["LRL"])
-                URL = int(row["URL"])
-                VA = int(row["VA"])
-                VPW = int(row["VPW"])
-                
-            elif row["Mode"] == "AAI":
-
-                LRL = int(row["LRL"])
-                URL = int(row["URL"])
-                AA = int(row["AA"])
-                APW = int(row["APW"])
-                AS = int(row["AS"])
-                ARP = int(row["ARP"])
-                PVARP = int(row["PVARP"])
-                HYST = int(row["Hyst"])
-                RS = int(row["RS"])
-                         
-            elif row["Mode"] == "VVI":
-
-                LRL = int(row["LRL"])
-                URL = int(row["URL"])
-                VA = int(row["VA"])
-                VPW = int(row["VPW"])
-                VS = int(row["VS"])
-                VVP = int(row["VVP"])
-                HYST = int(row["Hyst"])
-                RS = int(row["RS"])
-            break
-    running()
